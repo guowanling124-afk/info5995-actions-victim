@@ -1,0 +1,29 @@
+name: PRT Guard Test
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  checkout-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show event information
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Fork: ${{ github.event.pull_request.head.repo.fork }}"
+          echo "Head SHA: ${{ github.event.pull_request.head.sha }}"
+
+      - name: Attempt fork PR checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Marker after checkout
+        run: |
+          echo "CHECKOUT_SUCCEEDED"
